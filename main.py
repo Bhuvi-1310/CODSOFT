@@ -1,120 +1,116 @@
 from tkinter import *
+from random import *
+
+user_score = 0
+computer_score =0
+
+rock_text = '''
+    _______
+---'   ____)
+      (_____)
+      (_____)
+      (____)
+---.__(___)
+'''
+
+paper_text = '''
+    _______
+---'   ____)____
+          ______)
+          _______)
+         _______)
+---.__________)
+'''
+
+scissors_text = '''
+    _______
+---'   ____)____
+          ______)
+       __________)
+      (____)
+---.__(___)
+'''
+list_names = [rock_text, paper_text, scissors_text]
 
 
-def button_text(num):
-    global entry_text
-    entry_text = entry_text + str(num)
-    entry_label.set(entry_text)
+def user_scorecard():
+    global user_score
+    user_score += 1
+    user_score_label.config(text=f"User Score 👤:{user_score}")
 
 
-def equals():
-    global entry_text
-    try:
-        total = str(eval(entry_text))
-        entry_label.set(total)
-        entry_text = total
-
-    except SyntaxError:
-        entry_label.set("syntax error")
-        entry_text = ""
-
-    except ZeroDivisionError:
-        entry_label.set("Can't divide by zero")
-        entry_text = ""
+def computer_scorecard():
+    global computer_score
+    computer_score += 1
+    computer_score_label.config(text=f"Computer Score🖥:{computer_score}")
 
 
-def clear():
-    global entry_text
-    entry_label.set("")
-    entry_text = ""
+def winner(user_text, computer_text):
+    if user_text == computer_text:
+        winner_label.config(text="Match Draw🤝")
+    elif user_text == rock_text and computer_text == paper_text:
+        winner_label.config(text="Computer Won👎")
+        computer_scorecard()
+    elif user_text == scissors_text and computer_text == rock_text:
+        winner_label.config(text="Computer Won👎")
+        computer_scorecard()
+    elif user_text == paper_text and computer_text == scissors_text:
+        winner_label.config(text="Computer Won👎")
+        computer_scorecard()
+    else:
+        winner_label.config(text="User Won!!🏆")
+        user_scorecard()
 
+
+def rock():
+    user_label.config(text=rock_text)
+    computer_choice = choice(list_names)
+    computer_label.config(text=computer_choice)
+    winner(rock_text, computer_choice)
+
+
+def scissors():
+    user_label.config(text=scissors_text)
+    computer_choice = choice(list_names)
+    computer_label.config(text=computer_choice)
+    winner(scissors_text, computer_choice)
+
+
+def paper():
+    user_label.config(text=paper_text)
+    computer_choice = choice(list_names)
+    computer_label.config(text=computer_choice)
+    winner(paper_text, computer_choice)
+
+
+# Gui interface
 
 window = Tk()
-window.title("Calculator program")
-window.geometry("600x600")
+window.title("Rock-Paper-Scissors")
+window.config(padx=50, pady=50, bg="#E9967A")
 
-entry_text = ""
+# Buttons
 
-entry_label = StringVar()
+Rock_button = Button(text="Rock✊", width=31, font=("calibri", 12, "bold"), bg="#66CD00", command=rock)
+Rock_button.grid(row=3, column=0, padx=20, pady=20)
+scissors_button = Button(text="Scissors✌", width=31, font=("calibri", 12, "bold"), bg="#EE2C2C", command=scissors)
+scissors_button.grid(row=3, column=2, padx=20, pady=20)
+paper_button = Button(text="Paper✋", width=31, font=("calibri", 12, "bold"), bg="#00BFFF", command=paper)
+paper_button.grid(row=3, column=1, padx=20, pady=20)
 
-label = Label(window, textvariable=entry_label, font=('calibri', 20), bg="white", width=24, height=2)
-label.pack()
+# Label
 
-proj_frame = Frame(window)
-proj_frame.pack()
-
-#--------Buttons---------#
-
-button1 = Button(proj_frame, text=1, height=4, width=9, font=35,
-                 command=lambda: button_text(1))
-button1.grid(row=0, column=0)
-
-button2 = Button(proj_frame, text=2, height=4, width=9, font=35,
-                 command=lambda: button_text(2))
-button2.grid(row=0, column=1)
-
-button3 = Button(proj_frame, text=3, height=4, width=9, font=35,
-                 command=lambda: button_text(3))
-button3.grid(row=0, column=2)
-
-button4 = Button(proj_frame, text=4, height=4, width=9, font=35,
-                 command=lambda: button_text(4))
-button4.grid(row=1, column=0)
-
-button5 = Button(proj_frame, text=5, height=4, width=9, font=35,
-                 command=lambda: button_text(5))
-button5.grid(row=1, column=1)
-
-button6 = Button(proj_frame, text=6, height=4, width=9, font=35,
-                 command=lambda: button_text(6))
-button6.grid(row=1, column=2)
-
-button7 = Button(proj_frame, text=7, height=4, width=9, font=35,
-                 command=lambda: button_text(7))
-button7.grid(row=2, column=0)
-
-button8 = Button(proj_frame, text=8, height=4, width=9, font=35,
-                 command=lambda: button_text(8))
-button8.grid(row=2, column=1)
-
-button9 = Button(proj_frame, text=9, height=4, width=9, font=35,
-                 command=lambda: button_text(9))
-button9.grid(row=2, column=2)
-
-button0 = Button(proj_frame, text=0, height=4, width=9, font=35,
-                 command=lambda: button_text(0))
-button0.grid(row=3, column=0)
-
-plus = Button(proj_frame, text='+', height=4, width=9, font=35,
-              command=lambda: button_text('+'))
-plus.grid(row=3, column=2)
-
-minus = Button(proj_frame, text='-', height=4, width=9, font=35,
-               command=lambda: button_text('-'))
-minus.grid(row=2, column=3)
-
-multiply = Button(proj_frame, text='*', height=4, width=9, font=35,
-                  command=lambda: button_text('*'))
-multiply.grid(row=1, column=3)
-
-divide = Button(proj_frame, text='/', height=4, width=9, font=35,
-                command=lambda: button_text('/'))
-divide.grid(row=0, column=3)
-
-equal = Button(proj_frame, text='=', height=4, width=9, font=35,
-               command=equals)
-equal.grid(row=3, column=3)
-
-modulo = Button(proj_frame, text='%', height=4, width=9, font=35,
-                command=lambda:button_text('%'))
-modulo.grid(row=1, column=4)
-
-decimal = Button(proj_frame, text='.', height=4, width=9, font=35,
-                 command=lambda: button_text('.'))
-decimal.grid(row=3, column=1)
-
-clear = Button(proj_frame, text='AC', height=4, width=9, font=35,
-               command=clear)
-clear.grid(row=0,column=4)
+user_label = Label(text=rock_text, font=("calibri", 24, "bold"), bg="#E9967A")
+user_label.grid(row=2, column=0)
+computer_label = Label(text=rock_text, font=("calibri", 24, "bold"), bg="#E9967A")
+computer_label.grid(row=2, column=2)
+choose_label = Label(text="Rock ✊ - Paper ✋ - Scissors ✌ ", font=("calibri", 28, "bold"), bg="#E9967A")
+choose_label.grid(row=0, column=0, columnspan=3, pady=30, padx=30)
+user_score_label = Label(text="User Score 👤:0", font=("arial", 14, "bold"), bg="#E9967A")
+user_score_label.grid(row=1, column=0)
+computer_score_label = Label(text="Computer Score🖥:0", font=("arial", 14, "bold"), bg="#E9967A")
+computer_score_label.grid(row=1, column=2)
+winner_label = Label(text="", font=("calibri", 24, "bold"), bg="#E9967A")
+winner_label.grid(row=2, column=1)
 
 window.mainloop()
