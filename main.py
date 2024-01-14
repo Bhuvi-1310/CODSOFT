@@ -1,116 +1,90 @@
 from tkinter import *
-from random import *
-
-user_score = 0
-computer_score =0
-
-rock_text = '''
-    _______
----'   ____)
-      (_____)
-      (_____)
-      (____)
----.__(___)
-'''
-
-paper_text = '''
-    _______
----'   ____)____
-          ______)
-          _______)
-         _______)
----.__________)
-'''
-
-scissors_text = '''
-    _______
----'   ____)____
-          ______)
-       __________)
-      (____)
----.__(___)
-'''
-list_names = [rock_text, paper_text, scissors_text]
+from random import choice, shuffle
 
 
-def user_scorecard():
-    global user_score
-    user_score += 1
-    user_score_label.config(text=f"User Score 👤:{user_score}")
+# PASSWORD GENERATOR
 
+def generate_password():
+    password_entry.delete(0, END)
+    letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
+               'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+               'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+    numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    symbols = ['!', '#', '$', '%', '&', '(', ')', '*', '+']
 
-def computer_scorecard():
-    global computer_score
-    computer_score += 1
-    computer_score_label.config(text=f"Computer Score🖥:{computer_score}")
-
-
-def winner(user_text, computer_text):
-    if user_text == computer_text:
-        winner_label.config(text="Match Draw🤝")
-    elif user_text == rock_text and computer_text == paper_text:
-        winner_label.config(text="Computer Won👎")
-        computer_scorecard()
-    elif user_text == scissors_text and computer_text == rock_text:
-        winner_label.config(text="Computer Won👎")
-        computer_scorecard()
-    elif user_text == paper_text and computer_text == scissors_text:
-        winner_label.config(text="Computer Won👎")
-        computer_scorecard()
+    password_letters = [choice(letters) for i in range(25)]
+    if symbol_checkbox():
+        password_symbols = [choice(symbols) for i in range(25)]
     else:
-        winner_label.config(text="User Won!!🏆")
-        user_scorecard()
+        password_symbols = []
+    if number_checkbox():
+        password_numbers = [choice(numbers) for i in range(25)]
+    else:
+        password_numbers = []
+
+    password_list = password_letters + password_symbols + password_numbers
+    shuffle(password_list)
+    final_password = [choice(password_list) for i in range(length_spinbox())]
+
+    password = "".join(final_password)
+    password_entry.insert(0, password)
 
 
-def rock():
-    user_label.config(text=rock_text)
-    computer_choice = choice(list_names)
-    computer_label.config(text=computer_choice)
-    winner(rock_text, computer_choice)
+def length_spinbox():
+    return int(len_spinbox.get())
 
 
-def scissors():
-    user_label.config(text=scissors_text)
-    computer_choice = choice(list_names)
-    computer_label.config(text=computer_choice)
-    winner(scissors_text, computer_choice)
+def character_checkbox():
+    return int(characters_state.get())
 
 
-def paper():
-    user_label.config(text=paper_text)
-    computer_choice = choice(list_names)
-    computer_label.config(text=computer_choice)
-    winner(paper_text, computer_choice)
+def number_checkbox():
+    return int(numbers_state.get())
 
 
-# Gui interface
+def symbol_checkbox():
+    return int(symbols_state.get())
+
+
+# UI SETUP
 
 window = Tk()
-window.title("Rock-Paper-Scissors")
-window.config(padx=50, pady=50, bg="#E9967A")
+window.geometry("580x280")
+window.title("Password Generator")
+window.config(padx=20, pady=20)
+
+# Labels
+password_generator_label = Label(text="Password Generator🔒", font=("calibri", 24, "bold"), width=31)
+password_generator_label.grid(row=0, column=0, columnspan=3)
+password_length_label = Label(text="Length Of Password:", width=31, font=("calibri", 10, "bold"))
+password_length_label.grid(row=2, column=0)
+password_setting_label = Label(text="Password Settings:", width=31, font=("calibri", 10, "bold"))
+password_setting_label.grid(row=3, column=0)
+
+# Spinbox
+len_spinbox = Spinbox(from_=8, to=25, width=8, command=length_spinbox)
+len_spinbox.grid(row=2, column=1)
+
+# Checkbox
+characters_state = IntVar()
+character_checkbutton = Checkbutton(text="Characters🔡", variable=characters_state, width=8,
+                                    font=("calibri", 10, "bold"), borderwidth=5)
+characters_state.set(1)
+character_checkbutton.grid(row=4, column=0)
+numbers_state = IntVar()
+number_checkbutton = Checkbutton(text="Numbers🔢", variable=numbers_state, width=31, font=("calibri", 10, "bold"))
+number_checkbutton.grid(row=4, column=1)
+symbols_state = IntVar()
+symbol_checkbutton = Checkbutton(text="Symbols🔣", variable=symbols_state, width=31, font=("calibri", 10, "bold"))
+symbol_checkbutton.grid(row=5, column=0)
+
+# Entries
+password_entry = Entry(width=31)
+password_entry.grid(row=1, column=0, columnspan=3)
 
 # Buttons
-
-Rock_button = Button(text="Rock✊", width=31, font=("calibri", 12, "bold"), bg="#66CD00", command=rock)
-Rock_button.grid(row=3, column=0, padx=20, pady=20)
-scissors_button = Button(text="Scissors✌", width=31, font=("calibri", 12, "bold"), bg="#EE2C2C", command=scissors)
-scissors_button.grid(row=3, column=2, padx=20, pady=20)
-paper_button = Button(text="Paper✋", width=31, font=("calibri", 12, "bold"), bg="#00BFFF", command=paper)
-paper_button.grid(row=3, column=1, padx=20, pady=20)
-
-# Label
-
-user_label = Label(text=rock_text, font=("calibri", 24, "bold"), bg="#E9967A")
-user_label.grid(row=2, column=0)
-computer_label = Label(text=rock_text, font=("calibri", 24, "bold"), bg="#E9967A")
-computer_label.grid(row=2, column=2)
-choose_label = Label(text="Rock ✊ - Paper ✋ - Scissors ✌ ", font=("calibri", 28, "bold"), bg="#E9967A")
-choose_label.grid(row=0, column=0, columnspan=3, pady=30, padx=30)
-user_score_label = Label(text="User Score 👤:0", font=("arial", 14, "bold"), bg="#E9967A")
-user_score_label.grid(row=1, column=0)
-computer_score_label = Label(text="Computer Score🖥:0", font=("arial", 14, "bold"), bg="#E9967A")
-computer_score_label.grid(row=1, column=2)
-winner_label = Label(text="", font=("calibri", 24, "bold"), bg="#E9967A")
-winner_label.grid(row=2, column=1)
+generate_password_button = Button(text="Generate Password▶", command=generate_password, width=31, bg="#00CD00",
+                                  font=("calibri", 10, "bold"))
+generate_password_button.grid(row=6, column=0, columnspan=3)
 
 window.mainloop()
